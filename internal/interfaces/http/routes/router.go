@@ -4,11 +4,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
-	"github.com/GitAlex9/go-order-service/internal/application/factory"
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/handlers"
-	appmiddleware "github.com/GitAlex9/go-order-service/internal/interfaces/http/middleware"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/factory"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/handlers"
+	appmiddleware "github.com/GitAlex9/go-microservice-order/internal/interfaces/http/middleware"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func NewRouter(services *factory.ServiceFactory, tokenManager *jwt.TokenManager, log logger.Logger) chi.Router {

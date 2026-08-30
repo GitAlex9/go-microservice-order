@@ -1,10 +1,10 @@
 package validation
 
 import (
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 )
 
 func ValidateCreateUser(req dto.CreateUserRequest) (email valueobjects.Email, role entities.Role, verr *ValidationErrors) {

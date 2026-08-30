@@ -3,9 +3,9 @@ package routes
 import (
 	"github.com/go-chi/chi/v5"
 
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/handlers"
-	appmiddleware "github.com/GitAlex9/go-order-service/internal/interfaces/http/middleware"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/handlers"
+	appmiddleware "github.com/GitAlex9/go-microservice-order/internal/interfaces/http/middleware"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
 )
 
 func RegisterUserRoutes(r chi.Router, h *handlers.UserHandler, tokenManager *jwt.TokenManager) {

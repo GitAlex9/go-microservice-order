@@ -4,7 +4,7 @@ import (
 	"errors"
 	"unicode"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 

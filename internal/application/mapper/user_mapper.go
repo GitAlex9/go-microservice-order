@@ -1,8 +1,8 @@
 package mapper
 
 import (
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
 )
 
 func UserToResponse(u *entities.User) dto.UserResponse {

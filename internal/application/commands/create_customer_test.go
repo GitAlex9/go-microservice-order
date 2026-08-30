@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/validation"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/validation"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 func TestCreateCustomerHandler_Handle(t *testing.T) {

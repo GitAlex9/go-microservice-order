@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
 )
 
 type OrderService interface {

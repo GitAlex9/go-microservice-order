@@ -5,11 +5,11 @@ import (
 	"errors"
 	"time"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"

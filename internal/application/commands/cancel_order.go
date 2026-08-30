@@ -5,11 +5,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/mapper"
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	domainevents "github.com/GitAlex9/go-order-service/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/mapper"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	domainevents "github.com/GitAlex9/go-microservice-order/internal/domain/events"
 )
 
 type CancelOrderHandler struct {

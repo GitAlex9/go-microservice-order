@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 	"github.com/google/uuid"
 )
 

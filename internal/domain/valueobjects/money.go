@@ -3,7 +3,7 @@ package valueobjects
 import (
 	"fmt"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 type Money struct {

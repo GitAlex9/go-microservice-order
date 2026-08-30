@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/response"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/response"
 )
 
 type OrderHandler struct {

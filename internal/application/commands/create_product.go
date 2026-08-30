@@ -3,11 +3,11 @@ package commands
 import (
 	"context"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/mapper"
-	"github.com/GitAlex9/go-order-service/internal/application/validation"
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/mapper"
+	"github.com/GitAlex9/go-microservice-order/internal/application/validation"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
 )
 
 type CreateProductHandler struct {

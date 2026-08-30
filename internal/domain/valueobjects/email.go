@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)

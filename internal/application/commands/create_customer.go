@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/mapper"
-	"github.com/GitAlex9/go-order-service/internal/application/validation"
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/mapper"
+	"github.com/GitAlex9/go-microservice-order/internal/application/validation"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
 )
 
 type CreateCustomerHandler struct {

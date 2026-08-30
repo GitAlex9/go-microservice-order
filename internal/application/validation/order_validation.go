@@ -3,8 +3,8 @@ package validation
 import (
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 func ValidateCreateOrder(req dto.CreateOrderRequest) (customerID uuid.UUID, verr *ValidationErrors) {

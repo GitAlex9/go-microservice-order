@@ -3,7 +3,7 @@ package events
 import (
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func TestNewDefaultDispatcher_ReturnsNonNilDispatcher(t *testing.T) {

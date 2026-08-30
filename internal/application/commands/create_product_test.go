@@ -6,8 +6,8 @@ import (
 
 	"errors"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/validation"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/validation"
 )
 
 func TestCreateProductHandler_Handle(t *testing.T) {

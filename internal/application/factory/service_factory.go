@@ -6,14 +6,14 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/GitAlex9/go-order-service/internal/application/commands"
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	appevents "github.com/GitAlex9/go-order-service/internal/application/events"
-	"github.com/GitAlex9/go-order-service/internal/application/queries"
-	"github.com/GitAlex9/go-order-service/internal/application/services"
-	repository "github.com/GitAlex9/go-order-service/internal/infrastructure/repositories/postgres"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/commands"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	appevents "github.com/GitAlex9/go-microservice-order/internal/application/events"
+	"github.com/GitAlex9/go-microservice-order/internal/application/queries"
+	"github.com/GitAlex9/go-microservice-order/internal/application/services"
+	repository "github.com/GitAlex9/go-microservice-order/internal/infrastructure/repositories/postgres"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 type ServiceFactory struct {

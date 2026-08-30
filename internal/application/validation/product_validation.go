@@ -3,9 +3,9 @@ package validation
 import (
 	"strings"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 )
 
 func ValidateCreateProduct(req dto.CreateProductRequest) (name, description string, price valueobjects.Money, stock int, verr *ValidationErrors) {

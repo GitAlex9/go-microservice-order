@@ -1,9 +1,9 @@
 package events
 
 import (
-	"github.com/GitAlex9/go-order-service/internal/application/events/handlers"
-	"github.com/GitAlex9/go-order-service/internal/domain/events"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/events/handlers"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func NewDefaultDispatcher(log logger.Logger) events.Dispatcher {

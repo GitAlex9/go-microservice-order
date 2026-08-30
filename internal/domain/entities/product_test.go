@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 )
 
 func newTestPrice(t *testing.T, cents int64) valueobjects.Money {

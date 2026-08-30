@@ -1,4 +1,4 @@
-module github.com/GitAlex9/go-order-service
+module github.com/GitAlex9/go-microservice-order.git
 
 go 1.26.4
 

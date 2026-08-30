@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/response"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/response"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
 )
 
 func Authenticate(tokenManager *jwt.TokenManager) func(http.Handler) http.Handler {

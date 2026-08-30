@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/GitAlex9/go-order-service/internal/application/factory"
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/routes"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/factory"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/routes"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 type Server struct {

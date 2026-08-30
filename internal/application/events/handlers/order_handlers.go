@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/events"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 type LogOrderPaidHandler struct {

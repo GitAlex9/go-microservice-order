@@ -8,10 +8,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/factory"
-	"github.com/GitAlex9/go-order-service/internal/infrastructure/database/postgres"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/factory"
+	"github.com/GitAlex9/go-microservice-order/internal/infrastructure/database/postgres"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func main() {

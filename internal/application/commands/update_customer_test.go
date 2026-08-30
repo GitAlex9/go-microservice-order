@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
 	"github.com/google/uuid"
 )
 

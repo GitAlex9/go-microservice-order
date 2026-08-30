@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
 )
 
 type DeleteProductHandler struct {

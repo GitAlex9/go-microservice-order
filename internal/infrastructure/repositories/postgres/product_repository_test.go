@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 	"github.com/google/uuid"
 )
 

@@ -3,12 +3,12 @@ package commands
 import (
 	"context"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/application/mapper"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/mapper"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
 )
 
 type AuthenticateHandler struct {

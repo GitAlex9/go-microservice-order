@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/events"
 )
 
 type fakeHandler struct {

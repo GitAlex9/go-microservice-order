@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/GitAlex9/go-order-service/internal/infrastructure/database/postgres"
+	"github.com/GitAlex9/go-microservice-order/internal/infrastructure/database/postgres"
 	"github.com/jackc/pgx/v5/pgxpool"
 	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
 )

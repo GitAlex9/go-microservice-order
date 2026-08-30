@@ -6,7 +6,7 @@ import (
 
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func Logging(log logger.Logger) func(http.Handler) http.Handler {

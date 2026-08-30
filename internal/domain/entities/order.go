@@ -5,9 +5,9 @@ import (
 
 	"github.com/google/uuid"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
-	"github.com/GitAlex9/go-order-service/internal/domain/events"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 )
 
 type Order struct {

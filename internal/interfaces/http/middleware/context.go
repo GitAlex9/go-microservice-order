@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/pkg/jwt"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/jwt"
 )
 
 type contextKey string

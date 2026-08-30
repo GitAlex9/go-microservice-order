@@ -5,9 +5,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	"github.com/GitAlex9/go-order-service/internal/domain/entities"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/entities"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 type DeleteOrderHandler struct {

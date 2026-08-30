@@ -5,8 +5,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 var _ contracts.UnitOfWork = (*unitOfWork)(nil)

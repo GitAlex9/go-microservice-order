@@ -3,10 +3,10 @@ package validation
 import (
 	"strings"
 
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
-	"github.com/GitAlex9/go-order-service/internal/domain/valueobjects"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/valueobjects"
 )
 
 func ValidateCreateCustomer(req dto.CreateCustomerRequest) (name string, email valueobjects.Email, cpf valueobjects.CPF, verr *ValidationErrors) {

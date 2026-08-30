@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 
-	"github.com/GitAlex9/go-order-service/internal/application/commands"
-	"github.com/GitAlex9/go-order-service/internal/application/contracts"
-	"github.com/GitAlex9/go-order-service/internal/application/dto"
+	"github.com/GitAlex9/go-microservice-order/internal/application/commands"
+	"github.com/GitAlex9/go-microservice-order/internal/application/contracts"
+	"github.com/GitAlex9/go-microservice-order/internal/application/dto"
 )
 
 var _ contracts.AuthService = (*authService)(nil)

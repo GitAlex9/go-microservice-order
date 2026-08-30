@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/response"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/response"
 )
 
 // Lembrete da arquitetura, não esquecer: RequireRole só deve vir depois de Authenticate no chain de middlewares,

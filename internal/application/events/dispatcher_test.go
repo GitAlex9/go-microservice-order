@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	domainevents "github.com/GitAlex9/go-order-service/internal/domain/events"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	domainevents "github.com/GitAlex9/go-microservice-order/internal/domain/events"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 type testEvent struct {

@@ -3,7 +3,7 @@ package contracts
 import (
 	"context"
 
-	"github.com/GitAlex9/go-order-service/internal/domain/repositories"
+	"github.com/GitAlex9/go-microservice-order/internal/domain/repositories"
 )
 
 // Repositories agrupa instâncias de repository já vinculadas à mesma

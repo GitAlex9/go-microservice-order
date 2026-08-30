@@ -11,10 +11,10 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/GitAlex9/go-order-service/internal/application/factory"
-	"github.com/GitAlex9/go-order-service/internal/infrastructure/database/postgres"
-	httpserver "github.com/GitAlex9/go-order-service/internal/interfaces/http"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/application/factory"
+	"github.com/GitAlex9/go-microservice-order/internal/infrastructure/database/postgres"
+	httpserver "github.com/GitAlex9/go-microservice-order/internal/interfaces/http"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func main() {

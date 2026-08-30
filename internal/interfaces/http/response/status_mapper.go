@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/GitAlex9/go-order-service/internal/application/validation"
-	domainerrors "github.com/GitAlex9/go-order-service/internal/domain/errors"
+	"github.com/GitAlex9/go-microservice-order/internal/application/validation"
+	domainerrors "github.com/GitAlex9/go-microservice-order/internal/domain/errors"
 )
 
 // HandleError traduz qualquer erro vindo de application/domain para uma resposta HTTP.

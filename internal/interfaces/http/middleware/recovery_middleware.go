@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/GitAlex9/go-order-service/internal/interfaces/http/response"
-	"github.com/GitAlex9/go-order-service/internal/pkg/logger"
+	"github.com/GitAlex9/go-microservice-order/internal/interfaces/http/response"
+	"github.com/GitAlex9/go-microservice-order/internal/pkg/logger"
 )
 
 func Recovery(log logger.Logger) func(http.Handler) http.Handler {
