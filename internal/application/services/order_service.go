@@ -11,21 +11,29 @@ import (
 	"github.com/GitAlex9/go-microservice-order/internal/application/queries"
 )
 
+type createOrderExecutor interface {
+	Handle(ctx context.Context, req dto.CreateOrderRequest) (*dto.OrderResponse, error)
+}
+
+type cancelOrderExecutor interface {
+	Handle(ctx context.Context, id uuid.UUID) (*dto.OrderResponse, error)
+}
+
 var _ contracts.OrderService = (*orderService)(nil)
 
 type orderService struct {
-	createHandler *commands.CreateOrderHandler
+	createHandler createOrderExecutor
 	payHandler    *commands.PayOrderHandler
-	cancelHandler *commands.CancelOrderHandler
+	cancelHandler cancelOrderExecutor
 	deleteHandler *commands.DeleteOrderHandler
 	getHandler    *queries.GetOrderHandler
 	listHandler   *queries.ListOrdersHandler
 }
 
 func NewOrderService(
-	createHandler *commands.CreateOrderHandler,
+	createHandler createOrderExecutor,
 	payHandler *commands.PayOrderHandler,
-	cancelHandler *commands.CancelOrderHandler,
+	cancelHandler cancelOrderExecutor,
 	deleteHandler *commands.DeleteOrderHandler,
 	getHandler *queries.GetOrderHandler,
 	listHandler *queries.ListOrdersHandler,
@@ -52,14 +60,14 @@ func (s *orderService) Cancel(ctx context.Context, id uuid.UUID) (*dto.OrderResp
 	return s.cancelHandler.Handle(ctx, id)
 }
 
+func (s *orderService) Delete(ctx context.Context, id uuid.UUID) error {
+	return s.deleteHandler.Handle(ctx, id)
+}
+
 func (s *orderService) Get(ctx context.Context, id uuid.UUID) (*dto.OrderResponse, error) {
 	return s.getHandler.Handle(ctx, id)
 }
 
 func (s *orderService) List(ctx context.Context, offset, limit int) ([]dto.OrderResponse, error) {
 	return s.listHandler.Handle(ctx, offset, limit)
-}
-
-func (s *orderService) Delete(ctx context.Context, id uuid.UUID) error {
-	return s.deleteHandler.Handle(ctx, id)
 }
