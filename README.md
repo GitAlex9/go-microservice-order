@@ -1,167 +1,482 @@
-# go-order-service
+```markdown
+# Sistema de Microsserviços com Saga Orquestrada
 
-Projeto de estudo em Go, construído para aprender e aplicar na prática **Domain-Driven Design (DDD)**, **Rich Domain Model**, **Clean Architecture** e boas práticas de Go idiomático — do domínio até uma API HTTP completa, passando por testes automatizados.
+Um sistema de microsserviços pronto para produção implementando o padrão Saga orquestrada para transações distribuídas. Este projeto demonstra como transformar uma aplicação monolítica em serviços independentes enquanto mantém a consistência dos dados através de lógica de compensação explícita.
 
-> Este é um projeto de aprendizado. Decisões de design são documentadas propositalmente em `docs/decisions.md`, incluindo trade-offs e limitações conhecidas — a ideia é que o histórico do projeto (e do repositório) sirva de material de estudo, não só o código final.
+---
 
-## Stack
+## 📋 Índice
 
-- **Go** 1.22+
-- **PostgreSQL** (via [`pgx`](https://github.com/jackc/pgx))
-- **Chi** — roteamento HTTP
-- **JWT** (`golang-jwt/jwt`) — autenticação
-- **bcrypt** — hash de senha
-- **log/slog** — logging estruturado
-- **testify-free**: testes unitários com a biblioteca padrão (`testing`), padrão *table-driven* (`want`/`got`)
+* [Visão Geral](#visão-geral)
+* [Arquitetura](#arquitetura)
+* [Serviços](#serviços)
+* [Stack Tecnológica](#stack-tecnológica)
+* [Como Começar](#como-começar)
+* [Endpoints da API](#endpoints-da-api)
+* [Testando a Saga](#testando-a-saga)
+* [Dívida Técnica Conhecida](#dívida-técnica-conhecida)
+* [Roadmap](#roadmap)
+* [Melhorias na Clean Architecture](#melhorias-na-clean-architecture)
+* [Contribuição](#contribuição)
+* [Licença](#licença)
 
-## Arquitetura
+---
 
-O projeto segue Clean Architecture / Ports & Adapters, com a regra de dependência sempre apontando para dentro:
+## 🎯 Visão Geral
+
+Este projeto transforma um sistema monolítico de gerenciamento de pedidos em uma arquitetura de microsserviços utilizando o padrão **Saga orquestrada**. O `order-service` atua como o orquestrador da Saga, coordenando com outros serviços via HTTP para manter a consistência em transações distribuídas.
+
+### Principais Funcionalidades
+
+* **Orquestração de Saga**: `order-service` coordena transações distribuídas entre múltiplos serviços.
+* **Lógica de Compensação**: Rollback automático de etapas concluídas quando ocorrem falhas.
+* **Clean Architecture**: Separação de responsabilidades com princípios de Domain-Driven Design.
+* **Design Orientado a Eventos**: Eventos de domínio para consistência eventual e extensibilidade.
+* **Autenticação JWT**: Autenticação serviço-a-serviço com controle de acesso baseado em roles.
+
+---
+
+## 🏗️ Arquitetura
+
+### Visão Geral do Sistema
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                       API Gateway (Futuro)                  │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+        ▼                   ▼                   ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│   Customer    │   │    Product    │   │     User      │
+│   Service     │   │    Service    │   │    Service    │
+│    (8081)     │   │    (8082)     │   │    (8084)     │
+└───────┬───────┘   └───────┬───────┘   └───────┬───────┘
+        │                   │                   │
+        └──────────────────┼───────────────────┘
+                            │
+                     ┌──────▼──────┐
+                     │    Order    │ ◄── Orquestrador da Saga
+                     │   Service   │
+                     │    (8083)   │
+                     └─────────────┘
+                            │
+                            ▼
+                     ┌─────────────┐
+                     │ PostgreSQL  │
+                     │ (DB Comp.)  │
+                     └─────────────┘
 
 ```
-cmd/api, cmd/seed, cmd/app          → binários executáveis
-        │
-internal/interfaces/http            → HTTP (Chi): handlers, middleware, routes
-        │
-internal/application                → commands, queries, dto, validation,
-        │                              mapper, contracts, services, factory,
-        │                              unit of work, event dispatcher
-        │
-internal/domain                     → entities, value objects, domain events,
-        │                              domain errors, repository interfaces
-        │                              (não depende de nenhuma camada externa)
-        │
-internal/infrastructure             → implementação Postgres dos repositórios,
-                                       migrator, config de conexão
 
-internal/pkg                        → infraestrutura transversal (jwt, logger)
+### Fluxo da Saga - Criar Pedido
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant OrderService
+    participant CustomerService
+    participant ProductService
+    participant Database
+
+    Cliente->>OrderService: Criar Pedido
+    OrderService->>CustomerService: Validar Cliente
+    CustomerService-->>OrderService: Cliente Válido
+    
+    loop Cada Item
+        OrderService->>ProductService: Verificar Estoque
+        ProductService-->>OrderService: Estoque Disponível
+        OrderService->>ProductService: Reservar Estoque
+        ProductService-->>OrderService: Estoque Reservado
+    end
+    
+    OrderService->>Database: Salvar Pedido (Local)
+    Database-->>OrderService: Pedido Criado
+    
+    alt Falha em Algum Passo
+        OrderService->>ProductService: Compensar (Liberar Estoque)
+        ProductService-->>OrderService: Estoque Liberado
+        OrderService-->>Cliente: Transação Falhou
+    else Sucesso
+        OrderService-->>Cliente: Pedido Criado
+    end
+
 ```
 
-Documentação detalhada, incluindo o histórico de decisões arquiteturais (ADRs), backlog de produto e roadmap de sprints, está em [`docs/`](./docs):
+---
 
-- [`docs/architecture.md`](./docs/architecture.md) — visão geral e status atual por camada
-- [`docs/decisions.md`](./docs/decisions.md) — ADRs (Architectural Decision Records)
-- [`docs/roadmap.md`](./docs/roadmap.md) — histórico de sprints
-- [`docs/backlog.md`](./docs/backlog.md) — evoluções de produto planejadas, fora do escopo atual
+## 🔧 Serviços
 
-## Principais decisões de design (resumo)
+### 1. Customer Service (Porta 8081)
 
-- **Modelo rico**: entidades protegem seu próprio estado (`Product` controla estoque, `Order` controla transição de status via `OrderStatus.CanTransitionTo`) — nenhuma regra de negócio vive em um "service anêmico".
-- **Value Objects** para conceitos com regra própria: `Email`, `CPF`, `Money` (dinheiro em centavos, nunca `float64`, para evitar erro de arredondamento), `Password` (hash bcrypt, nunca texto puro fora do momento de criação).
-- **Unit of Work** garante atomicidade entre agregados diferentes (ex: criar um pedido decrementa estoque de múltiplos produtos — tudo confirma ou tudo desfaz junto).
-- **Domain Event Dispatcher**: eventos emitidos pelas entidades (`OrderPaidEvent`, `ProductStockDecreasedEvent`, etc.) são despachados **depois** da transação confirmar, nunca antes.
-- **CQRS simplificado**: cada operação é um `XHandler` (`commands`/`queries`), sem uma camada de dispatcher genérico de commands — decisão consciente para o tamanho atual do projeto (ver ADR-007).
-- **Autenticação stateless via JWT**, com mensagens de erro de login deliberadamente genéricas (proteção contra enumeração de usuários).
+* Operações CRUD para clientes.
+* Validação de clientes via HTTP.
+* Endpoints: `/api/v1/customers/*`
 
-Ver `docs/decisions.md` para o racional completo de cada decisão, incluindo o que foi avaliado e não implementado (ex: refresh token, revogação de token).
+### 2. Product Service (Porta 8082)
 
-## Rodando o projeto
+* Operações CRUD para produtos.
+* Gerenciamento de estoque (aumentar/diminuir).
+* Validação de disponibilidade de produtos.
+* Endpoints: `/api/v1/products/*`
+
+### 3. Order Service (Porta 8083) - Orquestrador da Saga
+
+* Criação de pedidos com coordenação da Saga.
+* Cancelamento de pedidos com compensação.
+* Gerenciamento de status do pedido.
+* Endpoints: `/api/v1/orders/*`
+
+### 4. User Service (Porta 8084)
+
+* Gerenciamento de usuários.
+* Autenticação JWT.
+* Controle de acesso baseado em roles.
+* Endpoints: `/api/v1/users/*`, `/api/v1/auth/*`
+
+---
+
+## 🛠️ Stack Tecnológica
+
+* **Linguagem**: Go 1.21+
+* **Framework**: Chi Router
+* **Banco de Dados**: PostgreSQL
+* **Autenticação**: JWT
+* **Testes**: Go standard testing + testify
+* **Logging**: Logger customizado com logs estruturados
+* **Migrações**: Migrações nativas em Go
+
+### Estrutura do Projeto (Clean Architecture)
+
+```text
+cmd/                              # Entrypoints da aplicação
+├── customer-service/
+├── product-service/
+├── order-service/
+├── user-service/
+└── seed/
+internal/
+├── application/                  # Casos de Uso
+│   ├── commands/                 # Command Handlers
+│   ├── queries/                  # Query Handlers
+│   ├── dto/                      # Data Transfer Objects
+│   ├── mapper/                   # Mapeamento Domínio para DTO
+│   ├── validation/               # Validação de entrada
+│   └── events/                   # Manipulação de eventos
+├── domain/                       # Regras de Negócio
+│   ├── entities/                 # Modelos de domínio
+│   ├── valueobjects/             # Value objects
+│   ├── repositories/             # Interfaces de repositórios
+│   └── events/                   # Eventos de domínio
+├── infrastructure/               # Preocupações externas
+│   ├── database/                 # Implementações de banco
+│   └── repositories/             # Implementações de repositórios
+├── interfaces/                   # Adaptadores
+│   ├── http/                     # Handlers e rotas HTTP
+│   └── integration/              # Clientes de serviços externos
+└── pkg/                          # Utilidades compartilhadas
+    ├── jwt/
+    └── logger/
+
+```
+
+---
+
+## 🚀 Como Começar
 
 ### Pré-requisitos
 
-- Go 1.22+
-- Docker (para o PostgreSQL)
+* Go 1.21+
+* PostgreSQL 14+
+* Make (opcional)
 
-### 1. Subir o banco de dados
+### Instalação
+
+Clone o repositório:
 
 ```bash
-docker compose up -d
+git clone [https://github.com/seu-usuario/go-microservice-order.git](https://github.com/seu-usuario/go-microservice-order.git)
+cd go-microservice-order
+
 ```
 
-### 2. Configurar variáveis de ambiente
-
-Copie `.env.example` para `.env` e ajuste se necessário:
+Configure o ambiente:
 
 ```bash
 cp .env.example .env
+# Edite .env com suas credenciais do banco de dados
+
 ```
 
-### 3. Popular dados iniciais (usuário admin + catálogo de produtos)
+Configure o banco de dados:
+
+```bash
+# Crie o banco de dados
+createdb -U postgres order_management
+
+# Execute as migrações (via qualquer serviço)
+go run ./cmd/customer-service/    # Auto-migra na inicialização
+
+```
+
+Execute os serviços (4 terminais separados):
+
+```bash
+# Terminal 1 - Customer Service
+go run ./cmd/customer-service/
+
+# Terminal 2 - Product Service
+go run ./cmd/product-service/
+
+# Terminal 3 - User Service
+go run ./cmd/user-service/
+
+# Terminal 4 - Order Service (Orquestrador)
+go run ./cmd/order-service/
+
+```
+
+Popule os dados iniciais:
 
 ```bash
 go run ./cmd/seed/
+
 ```
 
-Credenciais padrão criadas pelo seed (customizáveis via `SEED_ADMIN_EMAIL`/`SEED_ADMIN_PASSWORD`):
-
-| Campo | Valor |
-|---|---|
-| E-mail | `admin@example.com` |
-| Senha | `SenhaForte123!` |
-| Role | `admin` |
-
-### 4. Subir a API
+### Testando a Saga
 
 ```bash
-go run ./cmd/api/
-```
-
-A API sobe em `http://localhost:8080/api/v1`.
-
-### Testando a API
-
-Um guia completo de testes manuais via `curl`, cobrindo todos os endpoints, está disponível em [`docs/guia-testes-curl.pdf`](./docs/guia-testes-curl.pdf) (ou no arquivo `api-tests.http`, compatível com a extensão REST Client do VS Code).
-
-Fluxo rápido:
-
-```bash
-# Login
-curl -X POST http://localhost:8080/api/v1/auth/login \
-  -H "Content-Type: application/json" \
+# 1. Login para obter token JWT
+curl -X POST http://localhost:8084/api/v1/auth/login \
   -d '{"email":"admin@example.com","password":"SenhaForte123!"}'
 
-# Usa o token retornado nas próximas requisições
-curl http://localhost:8080/api/v1/customers \
-  -H "Authorization: Bearer <token>"
+# 2. Crie um cliente (se necessário)
+curl -X POST http://localhost:8081/api/v1/customers \
+  -H "Authorization: Bearer <token>" \
+  -d '{"name":"João Silva","email":"joao@example.com","cpf":"12345678900"}'
+
+# 3. Crie um produto (se necessário)
+curl -X POST http://localhost:8082/api/v1/products \
+  -H "Authorization: Bearer <token>" \
+  -d '{"name":"Notebook","price":1500.00,"stock":10}'
+
+# 4. Crie um pedido (Orquestração da Saga)
+curl -X POST http://localhost:8083/api/v1/orders \
+  -H "Authorization: Bearer <token>" \
+  -d '{
+    "customer_id": "<id-do-cliente>",
+    "items": [
+      {"product_id": "<id-do-produto>", "quantity": 2}
+    ]
+  }'
+
 ```
 
-### Playground manual (`cmd/app`)
+---
 
-Além da API, existe um binário de testes manuais que reseta o banco, roda um fluxo completo (criar/atualizar/listar em todas as entidades, incluindo casos que devem falhar propositalmente) e imprime o resultado no terminal — útil para validar mudanças rapidamente sem precisar de `curl`:
+## 📡 Endpoints da API
+
+### Order Service (Porta 8083)
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| POST | `/api/v1/orders` | Criar pedido (Saga) |
+| GET | `/api/v1/orders/:id` | Buscar pedido por ID |
+| GET | `/api/v1/orders` | Listar pedidos |
+| PUT | `/api/v1/orders/:id/pay` | Pagar pedido |
+| DELETE | `/api/v1/orders/:id` | Deletar pedido |
+| POST | `/api/v1/orders/:id/cancel` | Cancelar pedido (com compensação) |
+
+### Customer Service (Porta 8081)
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| POST | `/api/v1/customers` | Criar cliente |
+| GET | `/api/v1/customers/:id` | Buscar cliente |
+| PUT | `/api/v1/customers/:id` | Atualizar cliente |
+| DELETE | `/api/v1/customers/:id` | Deletar cliente |
+
+### Product Service (Porta 8082)
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| POST | `/api/v1/products` | Criar produto |
+| GET | `/api/v1/products/:id` | Buscar produto |
+| PUT | `/api/v1/products/:id` | Atualizar produto |
+| DELETE | `/api/v1/products/:id` | Deletar produto |
+| PATCH | `/api/v1/products/:id/decrease-stock` | Diminuir estoque |
+| PATCH | `/api/v1/products/:id/increase-stock` | Aumentar estoque |
+
+---
+
+## 🧪 Testando a Compensação
+
+Teste a lógica de compensação da Saga criando um pedido com múltiplos itens onde o segundo produto tem estoque insuficiente:
 
 ```bash
-APP_ENV=development go run ./cmd/app/
-```
+# 1. Configure o primeiro produto com estoque > 0
+# 2. Configure o segundo produto com estoque = 0
+# 3. Crie pedido com ambos os produtos
 
-> ⚠️ `cmd/app` **reseta o banco de dados** a cada execução. Nunca aponte `APP_ENV` para `production` — o `Resetter` se recusa a rodar fora de `development`/`test` por design.
-
-## Testes automatizados
-
-```bash
-go test ./... -cover
-```
-
-Para ver o relatório de cobertura em HTML:
-
-```bash
-go test ./... -coverprofile=coverage.out
-go tool cover -html=coverage.out
-```
-
-Estratégia de testes (ver ADR-012 em `docs/decisions.md`):
-- Testes unitários com padrão *table-driven* (`want`/`got`), sem framework externo de asserção
-- Nenhuma dependência de banco de dados real nos testes — repositórios são substituídos por dublês (fakes) em memória
-- Prioridade de cobertura: domínio (Value Objects, Entities) e regras de aplicação (validation, JWT, dispatcher de eventos) primeiro, por serem lógica pura de maior densidade de regra por linha
-
-## Estrutura de pastas
+curl -X POST http://localhost:8083/api/v1/orders \
+  -H "Authorization: Bearer <token>" \
+  -d '{
+    "customer_id": "<id-do-cliente>",
+    "items": [
+      {"product_id": "<id-produto1>", "quantity": 2},
+      {"product_id": "<id-produto2>", "quantity": 1} 
+    ]
+  }'
+# Nota sobre o teste: O item 2 vai falhar.
+# Resultado esperado: O estoque do primeiro produto é reservado e depois liberado automaticamente quando o segundo produto falha (compensação).
 
 ```
-cmd/
-  api/      → binário da API HTTP
-  seed/     → popula dados iniciais (idempotente)
-  app/      → playground de testes manuais (reseta o banco a cada execução)
-internal/
-  domain/           → entidades, value objects, eventos, erros, interfaces de repositório
-  application/       → commands, queries, dto, validation, mapper, contracts,
-                        services, factory, unit of work, event dispatcher
-  infrastructure/    → implementação Postgres, migrator, config
-  interfaces/http/   → handlers, middleware, routes, server (Chi)
-  pkg/               → jwt, logger
-docs/                → arquitetura, decisões (ADRs), roadmap, backlog, guia de testes
+
+---
+
+## ⚠️ Dívida Técnica Conhecida
+
+Este projeto inclui intencionalmente simplificações que representam dívida técnica real para fins de aprendizado:
+
+1. **Banco de Dados Compartilhado (Anti-Pattern)**
+* *Atual:* Todos os serviços compartilham um único banco de dados. Os 4 serviços continuam acessando o mesmo Postgres.
+* *Impacto:* Acoplamento entre serviços, ponto único de falha.
+* *Futuro:* Cada serviço terá seu próprio banco/schema.
+
+
+2. **Saga Síncrona (Sem Message Broker)**
+* *Atual:* Saga orquestrada via chamadas HTTP síncronas. Sem fila de mensagens.
+* *Impacto:* Operações bloqueantes, menos resiliente.
+* *Futuro:* Kafka/RabbitMQ para coreografia assíncrona.
+
+
+3. **Autenticação Simplificada entre Serviços**
+* *Atual:* Token JWT interno com segredo compartilhado para autenticação serviço-a-serviço.
+* *Impacto:* Menos seguro que service accounts adequadas.
+* *Futuro:* mTLS ou OAuth2 client credentials.
+
+
+4. **Compensação "Melhor Esforço"**
+* *Atual:* Se a compensação falhar, a aplicação apenas registra o log. Sem mecanismo de retry.
+* *Impacto:* Possível inconsistência se a compensação falhar.
+* *Futuro:* Saga log com retries e idempotência.
+
+
+5. **Sem Containerização**
+* *Atual:* Cada serviço roda com `go run` em terminal separado. Sem Docker/orquestração.
+* *Impacto:* Difícil reproduzir ambiente de produção.
+* *Futuro:* Docker + Kubernetes.
+
+
+
+---
+
+## 🗺️ Roadmap
+
+### Fase 1: Infraestrutura
+
+* [ ] Dockerizar todos os serviços
+* [ ] Docker Compose para desenvolvimento local
+* [ ] Health checks e shutdown graceful
+* [ ] Gerenciamento de configuração (Viper)
+
+### Fase 2: Desacoplamento do Banco
+
+* [ ] Banco de dados separado por serviço
+* [ ] Migrações por serviço
+* [ ] Réplicas de leitura para consultas
+* [ ] Otimização de pool de conexões
+
+### Fase 3: Integração com Mensageria
+
+* [ ] Integração com Kafka/RabbitMQ
+* [ ] Coreografia orientada a eventos
+* [ ] Saga orquestrada assíncrona
+* [ ] Dead letter queues e retries
+
+### Fase 4: Observabilidade
+
+* [ ] Tracing distribuído (Jaeger)
+* [ ] Métricas (Prometheus)
+* [ ] Logging centralizado (ELK)
+* [ ] Service mesh (Istio/Linkerd)
+
+### Fase 5: Pronto para Produção
+
+* [ ] Deploy no Kubernetes
+* [ ] Pipeline CI/CD
+* [ ] Deploy Blue/Green
+* [ ] Canary releases
+
+### Fase 6: Padrões Avançados
+
+* [ ] Circuit breakers (Resilience4j)
+* [ ] Rate limiting
+* [ ] API Gateway (Kong/Traefik)
+* [ ] Service discovery (Consul)
+
+---
+
+## 🧹 Melhorias na Clean Architecture
+
+### Pontos Fortes Atuais
+
+* [x] Inversão de Dependência (interfaces no domínio)
+* [x] Entidades independentes de frameworks
+* [x] Casos de uso na camada de aplicação
+* [x] Padrão Repository
+* [x] Eventos de domínio
+
+### Melhorias Futuras
+
+* [ ] CQRS: Separar modelos de leitura e escrita
+* [ ] Event Sourcing: Armazenar eventos como fonte da verdade
+* [ ] Idempotência: Operações idempotentes para retries
+* [ ] Serviços de Domínio: Lógica de negócio complexa no domínio
+* [ ] Padrão Specification: Especificações de consulta reutilizáveis
+* [ ] Aggregate Roots: Aplicar limites de consistência
+* [ ] Coleções de Value Objects: Encapsular coleções
+
+---
+
+## 🤝 Contribuição
+
+1. Faça o fork do repositório
+2. Crie sua branch de feature (`git checkout -b feature/feature-incrivel`)
+3. Commit suas mudanças (`git commit -m 'Adiciona feature incrível'`)
+4. Push para a branch (`git push origin feature/feature-incrivel`)
+5. Abra um Pull Request
+
+**Diretrizes de Desenvolvimento:**
+
+* Siga os princípios da Clean Architecture
+* Escreva testes para todas as novas funcionalidades
+* Atualize a documentação adequadamente
+* Use mensagens de commit significativas
+* Execute `go test ./...` antes de submeter
+
+---
+
+## 📝 Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para detalhes.
+
+## 🙏 Agradecimentos
+
+* Construído com princípios de Clean Architecture.
+* Inspirado em Domain-Driven Design.
+* Padrão Saga baseado em melhores práticas de sistemas distribuídos.
+
+## 🔗 Referências
+
+* Clean Architecture por Robert C. Martin
+* Padrão Saga
+* Domain-Driven Design
+* Go Clean Architecture
+
+> **Nota:** Este projeto é projetado para fins de aprendizado e demonstração. Os itens de dívida técnica conhecidos são intencionais para ilustrar a jornada do monolito para microsserviços e serão abordados em iterações futuras.
+
 ```
 
-## Status
-
-Etapa atual concluída: **monolito modular completo** — domínio rico, camada de aplicação com Unit of Work e Domain Event Dispatcher, API HTTP com autenticação JWT, e suíte de testes automatizados.
-
-Próximos passos planejados estão documentados em [`docs/roadmap.md`](./docs/roadmap.md) e [`docs/backlog.md`](./docs/backlog.md) — incluindo, para uma etapa futura e separada, uma exploração de decomposição em microsserviços com padrão Saga.
+```
